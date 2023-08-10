@@ -5,10 +5,10 @@ contract Hooks {
     modifier preStaticHook(
         address target,
         bytes4 selector,
-        bytes memory data
+        bytes memory callData
     ) {
         (bool success, ) = target.staticcall(
-            abi.encodeWithSelector(selector, data)
+            abi.encodeWithSelector(selector, callData)
         );
         if (!success) {
             revert("preStaticHook failed");
@@ -19,11 +19,11 @@ contract Hooks {
     modifier postStaticHook(
         address target,
         bytes4 selector,
-        bytes memory data
+        bytes memory callData
     ) {
         _;
         (bool success, ) = target.staticcall(
-            abi.encodeWithSelector(selector, data)
+            abi.encodeWithSelector(selector, callData)
         );
         if (!success) {
             revert("postStaticHook failed");
@@ -33,9 +33,11 @@ contract Hooks {
     modifier preHook(
         address target,
         bytes4 selector,
-        bytes memory data
+        bytes memory callData
     ) {
-        (bool success, ) = target.call(abi.encodeWithSelector(selector, data));
+        (bool success, ) = target.call(
+            abi.encodeWithSelector(selector, callData)
+        );
         if (!success) {
             revert("preHook failed");
         }
@@ -45,10 +47,12 @@ contract Hooks {
     modifier postHook(
         address target,
         bytes4 selector,
-        bytes memory data
+        bytes memory callData
     ) {
         _;
-        (bool success, ) = target.call(abi.encodeWithSelector(selector, data));
+        (bool success, ) = target.call(
+            abi.encodeWithSelector(selector, callData)
+        );
         if (!success) {
             revert("postHook failed");
         }

@@ -3,11 +3,11 @@ pragma solidity ^0.8.0;
 
 contract Hooks {
     modifier preStaticHook(
-        address addr,
+        address target,
         bytes4 selector,
         bytes memory data
     ) {
-        (bool success, ) = addr.staticcall(
+        (bool success, ) = target.staticcall(
             abi.encodeWithSelector(selector, data)
         );
         if (!success) {
@@ -17,12 +17,12 @@ contract Hooks {
     }
 
     modifier postStaticHook(
-        address addr,
+        address target,
         bytes4 selector,
         bytes memory data
     ) {
         _;
-        (bool success, ) = addr.staticcall(
+        (bool success, ) = target.staticcall(
             abi.encodeWithSelector(selector, data)
         );
         if (!success) {
@@ -31,11 +31,11 @@ contract Hooks {
     }
 
     modifier preHook(
-        address addr,
+        address target,
         bytes4 selector,
         bytes memory data
     ) {
-        (bool success, ) = addr.call(abi.encodeWithSelector(selector, data));
+        (bool success, ) = target.call(abi.encodeWithSelector(selector, data));
         if (!success) {
             revert("preHook failed");
         }
@@ -43,12 +43,12 @@ contract Hooks {
     }
 
     modifier postHook(
-        address addr,
+        address target,
         bytes4 selector,
         bytes memory data
     ) {
         _;
-        (bool success, ) = addr.call(abi.encodeWithSelector(selector, data));
+        (bool success, ) = target.call(abi.encodeWithSelector(selector, data));
         if (!success) {
             revert("postHook failed");
         }

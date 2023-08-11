@@ -9,46 +9,61 @@ contract HooksTest is Test, Hooks {
 
     function test_preHooks(
         address target,
-        bytes4 selector,
+        string memory signature,
         bytes memory callData
     ) public {
-        preHooks(target, selector, callData);
-    }
-
-    function testFail_preHooks(bytes memory callData) public {
-        preHooks(address(this), bytes4(keccak256("assertFail()")), callData);
+        if (!_staticcall(target, signature, callData)) {
+            vm.expectRevert();
+        }
+        _preHooks(target, signature, callData);
     }
 
     function test_postHooks(
         address target,
-        bytes4 selector,
+        string memory signature,
         bytes memory callData
     ) public {
-        postHooks(target, selector, callData);
+        if (!_staticcall(target, signature, callData)) {
+            vm.expectRevert();
+        }
+        _postHooks(target, signature, callData);
     }
 
-    function testFail_postHooks(bytes memory callData) public {
-        postHooks(address(this), bytes4(keccak256("assertFail()")), callData);
-    }
+    /*//////////////////////////////////////////////////////////////
+                                 INTERNAL
+    //////////////////////////////////////////////////////////////*/
 
-    function assertFail() public pure returns (bool) {
-        assert(1 == 0);
-        return false;
-    }
-
-    function preHooks(
+    function _preHooks(
         address target,
-        bytes4 selector,
+        string memory signature,
         bytes memory callData
-    ) public preHook(target, selector, callData) {
+    ) internal preStaticHook(target, signature, callData) {
         // pass
     }
 
-    function postHooks(
+    function _postHooks(
         address target,
-        bytes4 selector,
+        string memory signature,
         bytes memory callData
-    ) public postHook(target, selector, callData) {
+    ) internal preStaticHook(target, signature, callData) {
         // pass
+    }
+
+    function _call(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) internal returns (bool success) {
+        (success, ) = target.call(abi.encodeWithSignature(signature, callData));
+    }
+
+    function _staticcall(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) internal view returns (bool success) {
+        (success, ) = target.staticcall(
+            abi.encodeWithSignature(signature, callData)
+        );
     }
 }

@@ -2,26 +2,20 @@
 pragma solidity ^0.8.13;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {Hooks} from "../src/Hooks.sol";
 
-import "./Helper.sol";
+import {HooksHelper} from "./Helper.sol";
 
-contract HooksTest is Test, Hooks {
-    HooksImplementer hooksImpl;
-
-    function setUp() public {
-        hooksImpl = new HooksImplementer();
-    }
-
+contract HooksTest is Test, HooksHelper {
     function test_preHooks(
         address target,
         string memory signature,
         bytes memory callData
     ) public {
+        /// @dev call can update the state in its own right! so state may be different after the call (fix)
         if (!_call(target, signature, callData)) {
             vm.expectRevert();
         }
-        hooksImpl.preHooks(target, signature, callData);
+        _preHooks(target, signature, callData);
     }
 
     function test_postHooks(
@@ -29,10 +23,11 @@ contract HooksTest is Test, Hooks {
         string memory signature,
         bytes memory callData
     ) public {
+        /// @dev call can update the state in its own right! so state may be different after the call (fix)
         if (!_call(target, signature, callData)) {
             vm.expectRevert();
         }
-        hooksImpl.postHooks(target, signature, callData);
+        _postHooks(target, signature, callData);
     }
 
     function test_preStaticHooks(
@@ -43,7 +38,7 @@ contract HooksTest is Test, Hooks {
         if (!_staticcall(target, signature, callData)) {
             vm.expectRevert();
         }
-        hooksImpl.preStaticHooks(target, signature, callData);
+        _preStaticHooks(target, signature, callData);
     }
 
     function test_postStaticHooks(
@@ -54,28 +49,6 @@ contract HooksTest is Test, Hooks {
         if (!_staticcall(target, signature, callData)) {
             vm.expectRevert();
         }
-        hooksImpl.postStaticHooks(target, signature, callData);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                                 INTERNAL
-    //////////////////////////////////////////////////////////////*/
-
-    function _call(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal returns (bool success) {
-        (success, ) = target.call(abi.encodeWithSignature(signature, callData));
-    }
-
-    function _staticcall(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal view returns (bool success) {
-        (success, ) = target.staticcall(
-            abi.encodeWithSignature(signature, callData)
-        );
+        _postStaticHooks(target, signature, callData);
     }
 }

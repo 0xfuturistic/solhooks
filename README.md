@@ -66,7 +66,7 @@ Imagine you have a set of operations that need to be executed in a specific orde
 
 Typically, you'd have to manually ensure this sequence within the body of your function. With Solhooks, you can elegantly sequence these operations using `preHook` and `postHook`.
 
-###Example
+### Example
 Consider a scenario where:
 
 - Before executing the main function, you want: to check the balance of an account in a token contract (**Operation A**).
@@ -96,7 +96,7 @@ In the above example:
 
 - **Flexibility**: Easily change the sequence of operations or add/remove operations as needed without restructuring the entire function.
 
-### Use Cases:
+### Potential Applications
 - **Complex DApps**: In decentralized applications with multiple contracts interacting, Solhooks can ensure the correct sequence of calls between them.
 
 - **Upgrades & Migrations**: If you're migrating from one contract version to another, hooks can help in sequencing data transfers and updates.
@@ -133,13 +133,13 @@ function ensureSufficientBalance(uint256 amount) internal view {
 ```
 This `preHook` ensures the invariant that the contract has enough balance for the withdrawal.
 
-### Advantages of Using Solhooks for Invariants:
+### Advantages of Using Solhooks for Invariants
 - **Explicitness**: By using hooks to enforce invariants, the conditions are made explicit, enhancing code readability.
 - **Modularity**: Separating invariants from the main function logic allows for better modularization of code.
 - **Reusability**: Common invariants can be reused across different functions, ensuring consistency and reducing redundancy.
 - **Enhanced Security**: By ensuring invariants, potential vulnerabilities or logical errors can be detected and halted before they cause issues.
 
-### Potential Use Cases:
+### Potential Use Cases
 - **Token Contracts**: Ensure that the total supply of tokens remains constant after minting and burning operations.
 - **Voting Systems**: Ensure that the total number of votes doesn't exceed the total number of eligible voters.
 - **Auction Contracts**: Ensure that bids are only accepted if they're higher than the current highest bid.

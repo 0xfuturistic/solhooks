@@ -76,11 +76,11 @@ function multiStepOperation()
 ```
 
 <details open>
-<summary><h2>🖇️ Chaining Multiple Operations with Solhooks</h1></summary>
+<summary><h2>🖇️ Chaining Multiple Operations with Solhooks</h2></summary>
 
 In the realm of Ethereum smart contracts, there are times when you might want to sequence multiple operations or even call functions from various contracts in a specific order. This is where Solhooks truly shines.
 
-### What does "chaining multiple operations" mean?
+### What does _chaining_ multiple operations mean?
 Imagine you have a set of operations that need to be executed in a specific order:
 
 - **Operation A** needs to be executed before the main function.
@@ -128,7 +128,7 @@ In essence, Solhooks provides a powerful framework for developers to seamlessly 
 </details>
 
 <details open>
-<summary><h2>🪢 Enforcing Invariants and Constraints</h1></summary>
+<summary><h2>🪢 Enforcing State Transition Invariants</h2></summary>
 
 With Solhooks, developers can add arbitrary invariants and enforce constraints as pre and post hooks. This ensures:
 
@@ -143,7 +143,7 @@ We can inherit this contract and add a `preHook` modifier to the functions we wa
 
 ```solidity
 function withdraw(uint256 amount) public
-    preHook(this, "ensureSufficientBalance(uint256)", abi.encode(amount))
+    preHook(address(this), "ensureSufficientBalance(uint256)", abi.encode(amount))
     override
 {
     super.withdraw(amount);
@@ -166,6 +166,7 @@ function ensureSufficientBalance(uint256 amount) internal view {
 - **Enhanced Security**: By ensuring invariants, potential vulnerabilities or logical errors can be detected and halted before they cause issues.
 
 ### Potential Use Cases
+- **Automated market makers**: Ensure that an AMM's invariants (e.g., `xy=k`) are maintained after each swap.
 - **Token Contracts**: Ensure that the total supply of tokens remains constant after minting and burning operations.
 - **Voting Systems**: Ensure that the total number of votes doesn't exceed the total number of eligible voters.
 - **Auction Contracts**: Ensure that bids are only accepted if they're higher than the current highest bid.

@@ -30,33 +30,46 @@ Dive into the world of hooks with four powerful modifiers:
 Using `preHook`:
 
 ```solidity
-function transfer(address _to, uint256 _value) 
-    public 
-    preHook(_to, "transfer(address,uint256)", abi.encode(_to, _value)) 
+function transfer(address from, address to, uint256 amount)
+    public
+    preHook(from, "beforeTokenTransfer(address,uint256)", abi.encode(to, amount))
 {
     // Your function code here
 }
 ```
 
-In this example, the `transfer` function will execute the `_unsafeHook` function in the `Hooks` contract before executing the function code. The `_unsafeHook` function will call the `_to` contract's `transfer` function with the encoded `_to` and `_value` arguments.
+In this example, the `transfer` function will execute the `_unsafeHook` function in the `Hooks` contract before executing the function code. The `_unsafeHook` function will call the `from` contract's `beforeTokenTransfer` function with the encoded `from` and `amount` arguments.
 
 Using `postHook`:
 
 ```solidity
-function transfer(address _to, uint256 _value) 
-    public 
-    postHook(_to, "transfer(address,uint256)", abi.encode(_to, _value)) 
+function transfer(address from, address to, uint256 amount)
+    public
+    postHook(from, "afterTokenTransfer(address,uint256)", abi.encode(to, amount))
 {
     // Your function code here
+}
+```
+
+For adding hooks to already defined methods:
+
+```solidity
+function transfer(address from, address to, uint256 amount)
+    public
+    postHook(from, "afterTokenTransfer(address,uint256)", abi.encode(to, amount))
+    override
+{
+    super.transfer(from, amount);
 }
 ```
 
 For chaining multiple operations:
 
 ```solidity
-function multiStepOperation() 
-    public 
-    preHook(target1, "step1", callData1) postHook(target2, "step2", callData2) 
+function multiStepOperation()
+    public
+    preHook(target1, "step1", callData1)
+    postHook(target2, "step2", callData2)
 {
     // Core operation logic
 }
@@ -82,12 +95,12 @@ Typically, you'd have to manually ensure this sequence within the body of your f
 Using Solhooks, you can achieve this as follows:
 
 ```solidity
-function sendAndRecord(address _to, uint256 _amount) public 
-    preHook(tokenContract, "balanceOf(address)", abi.encode(_to)) 
-    postHook(ledgerContract, "recordTransaction(address,uint256)", abi.encode(_to, _amount))
+function sendAndRecord(address from, uint256 amount) public 
+    preHook(tokenContract, "balanceOf(address)", abi.encode(from)) 
+    postHook(ledgerContract, "recordTransaction(address,uint256)", abi.encode(from, amount))
 {
     // Main function: send tokens
-    token.transfer(_to, _amount);
+    token.transfer(from, amount);
 }
 ```
 In the above example:

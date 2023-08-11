@@ -53,24 +53,22 @@ function multiStepOperation() public preHook(target1, "step1", callData1) postHo
 }
 ```
 
-# 🧍 Use cases
+<details open>
+<summary><h2>🖇️ Chaining Multiple Operations with Solhooks</h1></summary>
 
-## 🖇️ Chaining Multiple Operations with Solhooks
 In the realm of Ethereum smart contracts, there are times when you might want to sequence multiple operations or even call functions from various contracts in a specific order. This is where Solhooks truly shines.
 
 ### What does "chaining multiple operations" mean?
 Imagine you have a set of operations that need to be executed in a specific order:
 
-1. **Operation A** needs to be executed before the main function.
-1. **Operation B** should be executed right after the main function.
+- **Operation A** needs to be executed before the main function.
+- **Operation B** should be executed right after the main function.
 
 Typically, you'd have to manually ensure this sequence within the body of your function. With Solhooks, you can elegantly sequence these operations using `preHook` and `postHook`.
 
 ### Example
-Consider a scenario where:
-
-- Before executing the main function, you want: to check the balance of an account in a token contract (**Operation A**).
-- After executing the main function, you want: to update a ledger contract with the new transaction details (**Operation B**).
+- Before executing the main function: you want to check the balance of an account in a token contract (**Operation A**).
+- After executing the main function: you want to update a ledger contract with the new transaction details (**Operation B**).
 
 Using Solhooks, you can achieve this as follows:
 
@@ -90,7 +88,7 @@ In the above example:
 - The `postHook` records the transaction details in the ledger contract after the transfer.
 
 ### Benefits of Chaining Operations with Solhooks
-- **Modularity**: Each operation remains a separate module, enhancing code readability and maintainability.
+- **Modularity**: Each operation remains a separate module, enhancing code readability, maintainability, and security.
 
 - **Reusability**: Common operations (like balance checks) can be reused across different functions or contracts.
 
@@ -105,14 +103,19 @@ In the above example:
 
 In essence, Solhooks provides a powerful framework for developers to seamlessly stitch together intricate workflows in their Ethereum smart contracts, making the development process both efficient and elegant.
 
-## 🪢 Enforcing Invariants and Constraints
+</details>
+
+<details open>
+<summary><h2>🪢 Enforcing Invariants and Constraints</h1></summary>
+
 With Solhooks, developers can add arbitrary invariants and enforce constraints as pre and post hooks. This ensures:
 
 - **Preconditions:** Before the execution of the main function, the preHook can be used to check certain conditions (preconditions) that must be satisfied.
 
 - **Postconditions:** After the function's execution, the postHook can validate that the function maintained certain conditions (postconditions).
 
-Example: Imagine a simple bank contract where users can deposit and withdraw Ether. An invariant might be that the total balance of the contract should never be negative.
+### Example
+Imagine a simple bank contract where users can deposit and withdraw Ether. An invariant might be that the total balance of the contract should never be negative.
 
 Using Solhooks:
 
@@ -145,6 +148,8 @@ This `preHook` ensures the invariant that the contract has enough balance for th
 - **Auction Contracts**: Ensure that bids are only accepted if they're higher than the current highest bid.
 
 In summary, Solhooks provides a structured and efficient way to embed invariants into Ethereum smart contracts, ensuring that they operate within defined boundaries, enhancing their reliability and security.
+
+</details>
 
 ---
 ## Contributing

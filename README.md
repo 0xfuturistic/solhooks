@@ -3,34 +3,27 @@
 Solhooks is a powerful and flexible Solidity library that provides pre and post hooks for function calls to other contracts. It allows you to execute custom code before or after a function call, either safely or unsafely.
 
 ### Features
-🛡️ **Safety First**: Execute hooks securely with our safePreHook and safePostHook.
+🛡️ **Safety First**: Execute hooks securely with `safePreHook` and `safePostHook`.
 
-⚡ **Flexibility**: With both preHook and postHook, integrate hooks as per your needs.
+⚡ **Flexibility**: With both `preHook` and `postHook`, integrate hooks as per your needs.
 
-🌐 **Universal Compatibility**: Designed specifically for Ethereum, but adaptable for various contract designs.
+🌐 **Universal Compatibility**: Designed specifically for Solidity, but adaptable for various contract programming languages.
 
 
 ## 🚀 Quick Start
-### 1️⃣ Installation
-Get Solhooks up and running in your Solidity project with Forge:
+Install with Foundry:
 
 ```sh
 forge install 0xfuturistic/solhooks
-```
-### 2️⃣ Integration
-Import Solhooks into your Solidity contract:
-
-```solidity
-import "solhooks/Hooks.sol";
 ```
 
 ## 🛠️ Usage
 Dive into the world of hooks with four powerful modifiers:
 
-- `preHook`: Executes an UNSAFE hook BEFORE the function call.
-- `postHook`: Executes an UNSAFE hook AFTER the function call.
-- `safePreHook`: Executes a SAFE hook BEFORE the function call.
-- `safePostHook`: Executes a SAFE hook AFTER the function call.
+- `preHook`: Executes an unsafe hook before the function it modifies.
+- `postHook`: Executes an unsafe hook after the function it modifies.
+- `safePreHook`: Executes a safe hook before the function it modifies.
+- `safePostHook`: Executes a safe hook after the function it modifies.
 
 ### Quick Examples
 
@@ -59,7 +52,6 @@ function multiStepOperation() public preHook(target1, "step1", callData1) postHo
     // Core operation logic
 }
 ```
----
 
 # 🧍 Use cases
 
@@ -93,27 +85,27 @@ function sendAndRecord(address _to, uint256 _amount) public
 ```
 In the above example:
 
-- The preHook ensures that the balance is checked in the token contract before making the transfer.
+- The `preHook` ensures that the balance is checked in the token contract before making the transfer.
 
-- The postHook records the transaction details in the ledger contract after the transfer.
+- The `postHook` records the transaction details in the ledger contract after the transfer.
 
 ### Benefits of Chaining Operations with Solhooks
-- Modularity: Each operation remains a separate module, enhancing code readability and maintainability.
+- **Modularity**: Each operation remains a separate module, enhancing code readability and maintainability.
 
-- Reusability: Common operations (like balance checks) can be reused across different functions or contracts.
+- **Reusability**: Common operations (like balance checks) can be reused across different functions or contracts.
 
-- Flexibility: Easily change the sequence of operations or add/remove operations as needed without restructuring the entire function.
+- **Flexibility**: Easily change the sequence of operations or add/remove operations as needed without restructuring the entire function.
 
 ### Use Cases:
-- Complex DApps: In decentralized applications with multiple contracts interacting, Solhooks can ensure the correct sequence of calls between them.
+- **Complex DApps**: In decentralized applications with multiple contracts interacting, Solhooks can ensure the correct sequence of calls between them.
 
-- Upgrades & Migrations: If you're migrating from one contract version to another, hooks can help in sequencing data transfers and updates.
+- **Upgrades & Migrations**: If you're migrating from one contract version to another, hooks can help in sequencing data transfers and updates.
 
-- Security: By adding checks or validations as pre-hooks, you can enhance the security of your main function.
+- **Security**: By adding checks or validations as pre-hooks, you can enhance the security of your main function.
 
 In essence, Solhooks provides a powerful framework for developers to seamlessly stitch together intricate workflows in their Ethereum smart contracts, making the development process both efficient and elegant.
 
-## 🛡️ Enforcing Invariants and Constraints
+## 🪢 Enforcing Invariants and Constraints
 With Solhooks, developers can add arbitrary invariants and enforce constraints as pre and post hooks. This ensures:
 
 - **Preconditions:** Before the execution of the main function, the preHook can be used to check certain conditions (preconditions) that must be satisfied.
@@ -139,7 +131,7 @@ function ensureSufficientBalance(uint256 amount) internal view {
     require(address(this).balance >= amount, "Insufficient balance for withdrawal");
 }
 ```
-This preHook ensures the invariant that the contract has enough balance for the withdrawal.
+This `preHook` ensures the invariant that the contract has enough balance for the withdrawal.
 
 ### Advantages of Using Solhooks for Invariants:
 - **Explicitness**: By using hooks to enforce invariants, the conditions are made explicit, enhancing code readability.

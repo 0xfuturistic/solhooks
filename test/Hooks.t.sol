@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Test, console2} from "forge-std/Test.sol";
 
-import {HooksHelper} from "./Helper.sol";
+import {HooksHelper, Hooks} from "./Helper.sol";
 
 contract HooksTest is Test, HooksHelper {
     function test_preHooks(
@@ -30,25 +30,25 @@ contract HooksTest is Test, HooksHelper {
         _postHooks(target, signature, callData);
     }
 
-    function test_preStaticHooks(
+    function test_safePreHooks(
         address target,
         string memory signature,
         bytes memory callData
     ) public {
-        if (!_staticcall(target, signature, callData)) {
+        if (!_safecall(target, signature, callData)) {
             vm.expectRevert();
         }
-        _preStaticHooks(target, signature, callData);
+        _safePreHooks(target, signature, callData);
     }
 
-    function test_postStaticHooks(
+    function test_safePostHooks(
         address target,
         string memory signature,
         bytes memory callData
     ) public {
-        if (!_staticcall(target, signature, callData)) {
+        if (!_safecall(target, signature, callData)) {
             vm.expectRevert();
         }
-        _postStaticHooks(target, signature, callData);
+        _safePostHooks(target, signature, callData);
     }
 }

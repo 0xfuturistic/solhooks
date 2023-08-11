@@ -8,9 +8,9 @@ contract HooksHelper is Hooks {
 
     event PostHook(address target, string signature, bytes callData);
 
-    event PreStaticHook(address target, string signature, bytes callData);
+    event SafePreHook(address target, string signature, bytes callData);
 
-    event PostStaticHook(address target, string signature, bytes callData);
+    event SafePostHook(address target, string signature, bytes callData);
 
     function _preHooks(
         address target,
@@ -28,37 +28,19 @@ contract HooksHelper is Hooks {
         emit PostHook(target, signature, callData);
     }
 
-    function _preStaticHooks(
+    function _safePreHooks(
         address target,
         string memory signature,
         bytes memory callData
-    ) internal preStaticHook(target, signature, callData) {
-        emit PreStaticHook(target, signature, callData);
+    ) internal safePreHook(target, signature, callData) {
+        emit SafePreHook(target, signature, callData);
     }
 
-    function _postStaticHooks(
+    function _safePostHooks(
         address target,
         string memory signature,
         bytes memory callData
-    ) internal postStaticHook(target, signature, callData) {
-        emit PostStaticHook(target, signature, callData);
-    }
-
-    function _call(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal returns (bool success) {
-        (success, ) = target.call(abi.encodeWithSignature(signature, callData));
-    }
-
-    function _staticcall(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal view returns (bool success) {
-        (success, ) = target.staticcall(
-            abi.encodeWithSignature(signature, callData)
-        );
+    ) internal safePostHook(target, signature, callData) {
+        emit SafePostHook(target, signature, callData);
     }
 }

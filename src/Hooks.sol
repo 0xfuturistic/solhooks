@@ -2,43 +2,12 @@
 pragma solidity ^0.8.0;
 
 contract Hooks {
-    modifier preStaticHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) {
-        (bool success, ) = target.staticcall(
-            abi.encodeWithSignature(signature, callData)
-        );
-        if (!success) {
-            revert("preStaticHook failed");
-        }
-        _;
-    }
-
-    modifier postStaticHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) {
-        _;
-        (bool success, ) = target.staticcall(
-            abi.encodeWithSignature(signature, callData)
-        );
-        if (!success) {
-            revert("postStaticHook failed");
-        }
-    }
-
     modifier preHook(
         address target,
         string memory signature,
         bytes memory callData
     ) {
-        (bool success, ) = target.call(
-            abi.encodeWithSignature(signature, callData)
-        );
-        if (!success) {
+        if (!_call(target, signature, callData)) {
             revert("preHook failed");
         }
         _;
@@ -50,11 +19,48 @@ contract Hooks {
         bytes memory callData
     ) {
         _;
-        (bool success, ) = target.call(
-            abi.encodeWithSignature(signature, callData)
-        );
-        if (!success) {
+        if (!_call(target, signature, callData)) {
             revert("postHook failed");
         }
+    }
+
+    modifier safePreHook(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) {
+        if (!_safecall(target, signature, callData)) {
+            revert("preStaticHook failed");
+        }
+        _;
+    }
+
+    modifier safePostHook(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) {
+        _;
+        if (!_safecall(target, signature, callData)) {
+            revert("postStaticHook failed");
+        }
+    }
+
+    function _call(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) internal returns (bool success) {
+        (success, ) = target.call(abi.encodeWithSignature(signature, callData));
+    }
+
+    function _safecall(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) internal view returns (bool success) {
+        (success, ) = target.staticcall(
+            abi.encodeWithSignature(signature, callData)
+        );
     }
 }

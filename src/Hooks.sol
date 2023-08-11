@@ -10,38 +10,22 @@ contract Hooks {
                                 MODIFIERS
     //////////////////////////////////////////////////////////////*/
 
-    modifier preHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) {
+    modifier preHook(address target, string memory signature, bytes memory callData) {
         _unsafeHook(target, signature, callData);
         _;
     }
 
-    modifier postHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) {
+    modifier postHook(address target, string memory signature, bytes memory callData) {
         _;
         _unsafeHook(target, signature, callData);
     }
 
-    modifier safePreHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) {
+    modifier safePreHook(address target, string memory signature, bytes memory callData) {
         _safeHook(target, signature, callData);
         _;
     }
 
-    modifier safePostHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) {
+    modifier safePostHook(address target, string memory signature, bytes memory callData) {
         _;
         _safeHook(target, signature, callData);
     }
@@ -49,21 +33,13 @@ contract Hooks {
     /*//////////////////////////////////////////////////////////////
                               HOOKS LOGIC
     //////////////////////////////////////////////////////////////*/
-    function _unsafeHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal {
+    function _unsafeHook(address target, string memory signature, bytes memory callData) internal {
         if (!_call(target, signature, callData)) {
             revert UnsafeHookFailed(target, signature, callData);
         }
     }
 
-    function _safeHook(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal view {
+    function _safeHook(address target, string memory signature, bytes memory callData) internal view {
         if (!_safecall(target, signature, callData)) {
             revert SafeHookFailed(target, signature, callData);
         }
@@ -73,21 +49,15 @@ contract Hooks {
                               CALLS LOGIC
     //////////////////////////////////////////////////////////////*/
 
-    function _call(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal returns (bool success) {
-        (success, ) = target.call(abi.encodeWithSignature(signature, callData));
+    function _call(address target, string memory signature, bytes memory callData) internal returns (bool success) {
+        (success,) = target.call(abi.encodeWithSignature(signature, callData));
     }
 
-    function _safecall(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) internal view returns (bool success) {
-        (success, ) = target.staticcall(
-            abi.encodeWithSignature(signature, callData)
-        );
+    function _safecall(address target, string memory signature, bytes memory callData)
+        internal
+        view
+        returns (bool success)
+    {
+        (success,) = target.staticcall(abi.encodeWithSignature(signature, callData));
     }
 }

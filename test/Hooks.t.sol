@@ -6,11 +6,7 @@ import {Test, console2} from "forge-std/Test.sol";
 import {HooksHelper, Hooks} from "./Helper.sol";
 
 contract HooksTest is Test, HooksHelper {
-    function test_preHooks(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) public {
+    function test_preHooks(address target, string memory signature, bytes memory callData) public {
         /// @dev call can update the state in its own right! so state may be different after the call (fix)
         if (!_call(target, signature, callData)) {
             vm.expectRevert();
@@ -18,11 +14,7 @@ contract HooksTest is Test, HooksHelper {
         _preHooks(target, signature, callData);
     }
 
-    function test_postHooks(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) public {
+    function test_postHooks(address target, string memory signature, bytes memory callData) public {
         /// @dev call can update the state in its own right! so state may be different after the call (fix)
         if (!_call(target, signature, callData)) {
             vm.expectRevert();
@@ -30,22 +22,14 @@ contract HooksTest is Test, HooksHelper {
         _postHooks(target, signature, callData);
     }
 
-    function test_safePreHooks(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) public {
+    function test_safePreHooks(address target, string memory signature, bytes memory callData) public {
         if (!_safecall(target, signature, callData)) {
             vm.expectRevert();
         }
         _safePreHooks(target, signature, callData);
     }
 
-    function test_safePostHooks(
-        address target,
-        string memory signature,
-        bytes memory callData
-    ) public {
+    function test_safePostHooks(address target, string memory signature, bytes memory callData) public {
         if (!_safecall(target, signature, callData)) {
             vm.expectRevert();
         }

@@ -1,15 +1,21 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.13;
+
+error SafeHookFailed(address target, string signature, bytes callData);
+
+error UnsafeHookFailed(address target, string signature, bytes callData);
 
 contract Hooks {
+    /*//////////////////////////////////////////////////////////////
+                                MODIFIERS
+    //////////////////////////////////////////////////////////////*/
+
     modifier preHook(
         address target,
         string memory signature,
         bytes memory callData
     ) {
-        if (!_call(target, signature, callData)) {
-            revert("preHook failed");
-        }
+        _unsafeHook(target, signature, callData);
         _;
     }
 
@@ -19,9 +25,7 @@ contract Hooks {
         bytes memory callData
     ) {
         _;
-        if (!_call(target, signature, callData)) {
-            revert("postHook failed");
-        }
+        _unsafeHook(target, signature, callData);
     }
 
     modifier safePreHook(
@@ -29,9 +33,7 @@ contract Hooks {
         string memory signature,
         bytes memory callData
     ) {
-        if (!_safecall(target, signature, callData)) {
-            revert("preStaticHook failed");
-        }
+        _safeHook(target, signature, callData);
         _;
     }
 
@@ -41,10 +43,35 @@ contract Hooks {
         bytes memory callData
     ) {
         _;
-        if (!_safecall(target, signature, callData)) {
-            revert("postStaticHook failed");
+        _safeHook(target, signature, callData);
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                              HOOKS LOGIC
+    //////////////////////////////////////////////////////////////*/
+    function _unsafeHook(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) internal {
+        if (!_call(target, signature, callData)) {
+            revert UnsafeHookFailed(target, signature, callData);
         }
     }
+
+    function _safeHook(
+        address target,
+        string memory signature,
+        bytes memory callData
+    ) internal view {
+        if (!_safecall(target, signature, callData)) {
+            revert SafeHookFailed(target, signature, callData);
+        }
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                              CALLS LOGIC
+    //////////////////////////////////////////////////////////////*/
 
     function _call(
         address target,

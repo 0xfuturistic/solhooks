@@ -115,29 +115,30 @@ With Solhooks, developers can add arbitrary invariants and enforce constraints a
 - **Postconditions:** After the function's execution, the postHook can validate that the function maintained certain conditions (postconditions).
 
 ### Example
-Imagine a simple bank contract where users can deposit and withdraw Ether. An invariant might be that the total balance of the contract should never be negative.
+Imagine a simple pool contract where users can deposit and withdraw tokens. An invariant might be that the total balance of the pool should never be negative.
 
-Using Solhooks:
+We can inherit this contract and add a `preHook` modifier to the functions we want to add invariants to:
 
 ```solidity
-function withdraw(uint256 amount) public 
-    preHook(this, "ensureSufficientBalance(uint256)", abi.encode(amount)) 
+function withdraw(uint256 amount) public
+    preHook(this, "ensureSufficientBalance(uint256)", abi.encode(amount))
+    override
 {
-    // Withdrawal logic
+    super.withdraw(amount);
 }
 ```
 
-Here, the ensureSufficientBalance function (added as a preHook) might look something like:
+Here, the `ensureSufficientBalance` function (called via a `preHook`) might look something like:
 
 ```solidity
 function ensureSufficientBalance(uint256 amount) internal view {
     require(address(this).balance >= amount, "Insufficient balance for withdrawal");
 }
 ```
-This `preHook` ensures the invariant that the contract has enough balance for the withdrawal.
+`preHook` calls it to ensure the invariant that the pool has enough balance for the withdrawal.
 
 ### Advantages of Using Solhooks for Invariants
-- **Explicitness**: By using hooks to enforce invariants, the conditions are made explicit, enhancing code readability.
+- **Explicitness**: By using hooks to enforce invariants, the conditions are made explicit, improving security and enhancing code readability.
 - **Modularity**: Separating invariants from the main function logic allows for better modularization of code.
 - **Reusability**: Common invariants can be reused across different functions, ensuring consistency and reducing redundancy.
 - **Enhanced Security**: By ensuring invariants, potential vulnerabilities or logical errors can be detected and halted before they cause issues.
@@ -154,8 +155,8 @@ In summary, Solhooks provides a structured and efficient way to embed invariants
 ---
 ## Contributing
 
-If you'd like to contribute to Hooks, please fork the repository and make changes as you'd like. Pull requests are welcome!
+If you'd like to contribute to Solhooks, please fork the repository and make changes as you'd like. Pull requests are welcome!
 
 ## License
 
-Hooks is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+Solhooks is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.

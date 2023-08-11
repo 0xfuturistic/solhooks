@@ -30,7 +30,10 @@ Dive into the world of hooks with four powerful modifiers:
 Using `preHook`:
 
 ```solidity
-function transfer(address _to, uint256 _value) public preHook(_to, "transfer(address,uint256)", abi.encode(_to, _value)) {
+function transfer(address _to, uint256 _value) 
+    public 
+    preHook(_to, "transfer(address,uint256)", abi.encode(_to, _value)) 
+{
     // Your function code here
 }
 ```
@@ -40,7 +43,10 @@ In this example, the `transfer` function will execute the `_unsafeHook` function
 Using `postHook`:
 
 ```solidity
-function transfer(address _to, uint256 _value) public postHook(_to, "transfer(address,uint256)", abi.encode(_to, _value)) {
+function transfer(address _to, uint256 _value) 
+    public 
+    postHook(_to, "transfer(address,uint256)", abi.encode(_to, _value)) 
+{
     // Your function code here
 }
 ```
@@ -48,7 +54,10 @@ function transfer(address _to, uint256 _value) public postHook(_to, "transfer(ad
 For chaining multiple operations:
 
 ```solidity
-function multiStepOperation() public preHook(target1, "step1", callData1) postHook(target2, "step2", callData2) {
+function multiStepOperation() 
+    public 
+    preHook(target1, "step1", callData1) postHook(target2, "step2", callData2) 
+{
     // Core operation logic
 }
 ```

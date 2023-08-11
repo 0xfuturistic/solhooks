@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Hooks} from "../src/Hooks.sol";
 
-contract HooksHelper is Hooks {
+contract Helper is Hooks {
     event SafePreHook(address target, string signature, bytes callData);
 
     event SafePostHook(address target, string signature, bytes callData);

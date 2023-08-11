@@ -61,7 +61,9 @@ function multiStepOperation() public preHook(target1, "step1", callData1) postHo
 ```
 ---
 
-## 🔄 Chaining Multiple Operations with Solhooks
+# 🧍 Use cases
+
+## 🖇️ Chaining Multiple Operations with Solhooks
 In the realm of Ethereum smart contracts, there are times when you might want to sequence multiple operations or even call functions from various contracts in a specific order. This is where Solhooks truly shines.
 
 ### What does "chaining multiple operations" mean?
@@ -111,9 +113,7 @@ In the above example:
 
 In essence, Solhooks provides a powerful framework for developers to seamlessly stitch together intricate workflows in their Ethereum smart contracts, making the development process both efficient and elegant.
 
----
-
-## 🛡️ Enforcing Invariants and Constraints with Solhooks
+## 🛡️ Enforcing Invariants and Constraints
 With Solhooks, developers can add arbitrary invariants and enforce constraints as pre and post hooks. This ensures:
 
 - **Preconditions:** Before the execution of the main function, the preHook can be used to check certain conditions (preconditions) that must be satisfied.
@@ -142,10 +142,10 @@ function ensureSufficientBalance(uint256 amount) internal view {
 This preHook ensures the invariant that the contract has enough balance for the withdrawal.
 
 ### Advantages of Using Solhooks for Invariants:
-- Explicitness: By using hooks to enforce invariants, the conditions are made explicit, enhancing code readability.
-- Modularity: Separating invariants from the main function logic allows for better modularization of code.
-- Reusability: Common invariants can be reused across different functions, ensuring consistency and reducing redundancy.
-- Enhanced Security: By ensuring invariants, potential vulnerabilities or logical errors can be detected and halted before they cause issues.
+- **Explicitness**: By using hooks to enforce invariants, the conditions are made explicit, enhancing code readability.
+- **Modularity**: Separating invariants from the main function logic allows for better modularization of code.
+- **Reusability**: Common invariants can be reused across different functions, ensuring consistency and reducing redundancy.
+- **Enhanced Security**: By ensuring invariants, potential vulnerabilities or logical errors can be detected and halted before they cause issues.
 
 ### Potential Use Cases:
 - **Token Contracts**: Ensure that the total supply of tokens remains constant after minting and burning operations.
@@ -154,6 +154,7 @@ This preHook ensures the invariant that the contract has enough balance for the 
 
 In summary, Solhooks provides a structured and efficient way to embed invariants into Ethereum smart contracts, ensuring that they operate within defined boundaries, enhancing their reliability and security.
 
+---
 ## Contributing
 
 If you'd like to contribute to Hooks, please fork the repository and make changes as you'd like. Pull requests are welcome!

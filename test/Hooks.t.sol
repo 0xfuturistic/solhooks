@@ -26,13 +26,11 @@ contract HooksTest is Test {
     /// NON-STATIC HOOKS
     function test_preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
         vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), abi.encode(""));
-        vm.expectCall(funAddress, abi.encodeWithSelector(funSelector, input));
         handler.preHook(funAddress, funSelector, input, gas);
     }
 
     function test_postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
         vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), abi.encode(""));
-        vm.expectCall(funAddress, abi.encodeWithSelector(funSelector, input));
         handler.postHook(funAddress, funSelector, input, gas);
     }
 

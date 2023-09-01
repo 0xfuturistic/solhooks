@@ -31,20 +31,32 @@ contract HooksTest is Test {
 
     function test_postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
         vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), abi.encode(""));
-        handler.postHook(funAddress, funSelector, input, gas);
+        hooks.postHook(funAddress, funSelector, input, gas);
     }
 
     function testFail_preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
         vm.mockCallRevert(funAddress, abi.encodeWithSelector(funSelector, input), "");
-        handler.preHook(funAddress, funSelector, input, gas);
+        hooks.preHook(funAddress, funSelector, input, gas);
     }
 
     function testFail_postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
         vm.mockCallRevert(funAddress, abi.encodeWithSelector(funSelector, input), "");
-        handler.postHook(funAddress, funSelector, input, gas);
+        hooks.postHook(funAddress, funSelector, input, gas);
     }
 
     /// STATIC HOOKS
+    function test_preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
+        (bool success,) = funAddress.staticcall{gas: gas}(abi.encodeWithSelector(funSelector, input));
+        if (!success) vm.expectRevert();
+        hooks.preHookStatic(funAddress, funSelector, input, gas);
+    }
+
+    function test_postHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
+        (bool success,) = funAddress.staticcall{gas: gas}(abi.encodeWithSelector(funSelector, input));
+        if (!success) vm.expectRevert();
+        hooks.preHookStatic(funAddress, funSelector, input, gas);
+    }
+
     function invariant_staticHooks() public {
         if (handler.ghost_funAddress() == address(0)) return;
         (bool success,) = handler.ghost_funAddress().staticcall{gas: handler.ghost_gas()}(

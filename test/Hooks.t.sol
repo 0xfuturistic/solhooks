@@ -23,6 +23,16 @@ contract HooksTest is Test {
         targetContract(address(handler));
     }
 
+    function test_preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
+        vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), "");
+        handler.preHook(funAddress, funSelector, input, gas);
+    }
+
+    function test_postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
+        vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), "");
+        handler.postHook(funAddress, funSelector, input, gas);
+    }
+
     function testFail_preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
         vm.mockCallRevert(funAddress, abi.encodeWithSelector(funSelector, input), "");
         handler.preHook(funAddress, funSelector, input, gas);

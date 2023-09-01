@@ -26,6 +26,14 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
         hooks = hooks_;
     }
 
+    function callSummary() external view {
+        console.log("Call summary:");
+        console.log("-------------------");
+        console.log("preHookStatic", calls["preHookStatic"]);
+        console.log("postHookStatic", calls["postHookStatic"]);
+        console.log("-------------------");
+    }
+
     function preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
         public
         countCall("preHookStatic")
@@ -40,14 +48,6 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
         PostHookStatic(funAddress, funSelector, input, gas)
     {
         _setGhostSuccess(funAddress, funSelector, input, gas);
-    }
-
-    function callSummary() external view {
-        console.log("Call summary:");
-        console.log("-------------------");
-        console.log("preHookStatic", calls["preHookStatic"]);
-        console.log("postHookStatic", calls["postHookStatic"]);
-        console.log("-------------------");
     }
 
     function _setGhostSuccess(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) internal {

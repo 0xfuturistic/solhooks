@@ -30,9 +30,25 @@ contract Handler is CommonBase, StdCheats, StdUtils {
     function callSummary() external view {
         console.log("Call summary:");
         console.log("-------------------");
+        console.log("preHook", calls["preHook"]);
+        console.log("postHook", calls["postHook"]);
         console.log("preHookStatic", calls["preHookStatic"]);
         console.log("postHookStatic", calls["postHookStatic"]);
         console.log("-------------------");
+    }
+
+    function preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        public
+        countCall("preHook")
+    {
+        hooks.preHook(funAddress, funSelector, input, gas);
+    }
+
+    function postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        public
+        countCall("postHook")
+    {
+        hooks.postHook(funAddress, funSelector, input, gas);
     }
 
     function preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)

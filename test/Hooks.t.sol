@@ -5,7 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {Hooks} from "../src/Hooks.sol";
 import {Handler} from "./handlers/Handler.sol";
 
-contract HooksInvariants is Test {
+contract HooksTest is Test {
     Hooks public hooks;
     Handler public handler;
 
@@ -13,12 +13,24 @@ contract HooksInvariants is Test {
         hooks = new Hooks();
         handler = new Handler(hooks);
 
-        bytes4[] memory selectors = new bytes4[](2);
-        selectors[0] = handler.preHookStatic.selector;
-        selectors[1] = handler.postHookStatic.selector;
+        bytes4[] memory selectors = new bytes4[](4);
+        selectors[0] = handler.preHook.selector;
+        selectors[1] = handler.postHook.selector;
+        selectors[2] = handler.preHookStatic.selector;
+        selectors[3] = handler.postHookStatic.selector;
 
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
         targetContract(address(handler));
+    }
+
+    function testFail_preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
+        vm.mockCallRevert(funAddress, abi.encodeWithSelector(funSelector, input), "");
+        handler.preHook(funAddress, funSelector, input, gas);
+    }
+
+    function testFail_postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
+        vm.mockCallRevert(funAddress, abi.encodeWithSelector(funSelector, input), "");
+        handler.postHook(funAddress, funSelector, input, gas);
     }
 
     function invariant_staticHooks() public {

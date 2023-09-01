@@ -35,4 +35,24 @@ contract Hooks {
             revert HookFailed();
         }
     }
+
+    function preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        public
+        PreHook(funAddress, funSelector, input, gas)
+    {}
+
+    function postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        public
+        PostHook(funAddress, funSelector, input, gas)
+    {}
+
+    function preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        public
+        PreHookStatic(funAddress, funSelector, input, gas)
+    {}
+
+    function postHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        public
+        PostHookStatic(funAddress, funSelector, input, gas)
+    {}
 }

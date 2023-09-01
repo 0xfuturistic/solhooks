@@ -22,28 +22,22 @@ contract HooksTest is Test {
     }
 
     function invariant_staticHookSuccess() public {
+        if (handler.ghost_funAddress_fail() == address(0)) return;
         (bool success,) = handler.ghost_funAddress_success().staticcall{gas: handler.ghost_gas_success()}(
             abi.encodeWithSelector(handler.ghost_funSelector_success(), handler.ghost_input_success())
         );
         assertTrue(success);
     }
 
+    function invariant_staticHookFail() public {
+        if (handler.ghost_funAddress_fail() == address(0)) return;
+        (bool success,) = handler.ghost_funAddress_fail().staticcall{gas: handler.ghost_gas_fail()}(
+            abi.encodeWithSelector(handler.ghost_funSelector_fail(), handler.ghost_input_fail())
+        );
+        assertFalse(success);
+    }
+
     function invariant_callSummary() public view {
         handler.callSummary();
-    }
-
-    function test_preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
-        _setup_vm_static(funAddress, funSelector, input, gas);
-        handler.preHookStatic(funAddress, funSelector, input, gas);
-    }
-
-    function test_postHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
-        _setup_vm_static(funAddress, funSelector, input, gas);
-        handler.postHookStatic(funAddress, funSelector, input, gas);
-    }
-
-    function _setup_vm_static(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) internal {
-        (bool success,) = funAddress.staticcall{gas: gas}(abi.encodeWithSelector(funSelector, input));
-        if (!success) vm.expectRevert();
     }
 }

@@ -37,22 +37,22 @@ contract Hooks {
     }
 
     function preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
-        public
+        external
         PreHook(funAddress, funSelector, input, gas)
     {}
 
     function postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
-        public
+        external
         PostHook(funAddress, funSelector, input, gas)
     {}
 
     function preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
-        public
+        external
         PreHookStatic(funAddress, funSelector, input, gas)
     {}
 
     function postHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
-        public
+        external
         PostHookStatic(funAddress, funSelector, input, gas)
     {}
 }

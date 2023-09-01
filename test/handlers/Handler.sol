@@ -7,7 +7,7 @@ import {StdUtils} from "forge-std/StdUtils.sol";
 import {console} from "forge-std/console.sol";
 import {Hooks} from "../../src/Hooks.sol";
 
-contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
+contract Handler is CommonBase, StdCheats, StdUtils {
     Hooks public hooks;
 
     mapping(bytes32 => uint256) public calls;
@@ -16,6 +16,11 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
     bytes4 public ghost_funSelector_success;
     bytes public ghost_input_success;
     uint256 public ghost_gas_success;
+
+    address public ghost_funAddress_fail;
+    bytes4 public ghost_funSelector_fail;
+    bytes public ghost_input_fail;
+    uint256 public ghost_gas_fail;
 
     modifier countCall(bytes32 key) {
         calls[key]++;
@@ -37,17 +42,23 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
     function preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
         public
         countCall("preHookStatic")
-        PreHookStatic(funAddress, funSelector, input, gas)
     {
-        _setGhostSuccess(funAddress, funSelector, input, gas);
+        try hooks.preHookStatic(funAddress, funSelector, input, gas) {
+            _setGhostSuccess(funAddress, funSelector, input, gas);
+        } catch {
+            _setGhostFail(funAddress, funSelector, input, gas);
+        }
     }
 
     function postHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
         public
         countCall("postHookStatic")
-        PostHookStatic(funAddress, funSelector, input, gas)
     {
-        _setGhostSuccess(funAddress, funSelector, input, gas);
+        try hooks.postHookStatic(funAddress, funSelector, input, gas) {
+            _setGhostSuccess(funAddress, funSelector, input, gas);
+        } catch {
+            _setGhostFail(funAddress, funSelector, input, gas);
+        }
     }
 
     function _setGhostSuccess(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) internal {
@@ -55,5 +66,12 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
         ghost_funSelector_success = funSelector;
         ghost_input_success = input;
         ghost_gas_success = gas;
+    }
+
+    function _setGhostFail(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) internal {
+        ghost_funAddress_fail = funAddress;
+        ghost_funSelector_fail = funSelector;
+        ghost_input_fail = input;
+        ghost_gas_fail = gas;
     }
 }

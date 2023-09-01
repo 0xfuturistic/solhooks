@@ -1,30 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {Test, console2} from "forge-std/Test.sol";
-import {Vm} from "forge-std/Vm.sol";
+import {Test} from "forge-std/Test.sol";
+import {Hooks} from "../src/Hooks.sol";
+import {Handler} from "./handlers/Handler.sol";
 
-import "./Helper.sol";
+contract CommitmentManagerTest is Test {
+    Hooks public hooks;
+    Handler public handler;
 
-contract HooksTest is Test, Helper {
-    function test_preHooks(address addr, bytes4 selector, bytes calldata input) public pure {
-        function (bytes calldata) external pure f;
-        assembly {
-            f.address := addr
-            f.selector := selector
-        }
+    function setUp() public {
+        hooks = new Hooks();
+        handler = new Handler(hooks);
 
-        assert(f.address == addr);
-        assert(f.selector == selector);
+        bytes4[] memory selectors = new bytes4[](1);
+        selectors[0] = handler.handlerPreHook.selector;
 
-        //(bool success,) = f.address.staticcall(abi.encodeWithSelector(f.selector, input));
+        targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
 
-        // if (!success) {
-        //vm.expectRevert();
-        //}
-
-        //_preHook(f, input);
+        targetContract(address(handler));
     }
 
-    function _preHook(function (bytes calldata) external f, bytes calldata input) internal preHook(f, input) {}
+    function invariant_commitmentValidity() public view {}
+
+    function invariant_callSummary() public view {
+        handler.callSummary();
+    }
 }

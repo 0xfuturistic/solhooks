@@ -23,13 +23,16 @@ contract HooksTest is Test {
         targetContract(address(handler));
     }
 
+    /// NON-STATIC HOOKS
     function test_preHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
-        vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), "");
+        vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), abi.encode(""));
+        vm.expectCall(funAddress, abi.encodeWithSelector(funSelector, input));
         handler.preHook(funAddress, funSelector, input, gas);
     }
 
     function test_postHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) public {
-        vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), "");
+        vm.mockCall(funAddress, abi.encodeWithSelector(funSelector, input), abi.encode(""));
+        vm.expectCall(funAddress, abi.encodeWithSelector(funSelector, input));
         handler.postHook(funAddress, funSelector, input, gas);
     }
 
@@ -43,6 +46,7 @@ contract HooksTest is Test {
         handler.postHook(funAddress, funSelector, input, gas);
     }
 
+    /// STATIC HOOKS
     function invariant_staticHooks() public {
         if (handler.ghost_funAddress() == address(0)) return;
         (bool success,) = handler.ghost_funAddress().staticcall{gas: handler.ghost_gas()}(

@@ -21,20 +21,16 @@ contract HooksInvariants is Test {
         targetContract(address(handler));
     }
 
-    function invariant_staticHookSuccess() public {
-        if (handler.ghost_funAddress_fail() == address(0)) return;
-        (bool success,) = handler.ghost_funAddress_success().staticcall{gas: handler.ghost_gas_success()}(
-            abi.encodeWithSelector(handler.ghost_funSelector_success(), handler.ghost_input_success())
+    function invariant_staticHooks() public {
+        if (handler.ghost_funAddress() == address(0)) return;
+        (bool success,) = handler.ghost_funAddress().staticcall{gas: handler.ghost_gas()}(
+            abi.encodeWithSelector(handler.ghost_funSelector(), handler.ghost_input())
         );
-        assertTrue(success);
-    }
-
-    function invariant_staticHookFail() public {
-        if (handler.ghost_funAddress_fail() == address(0)) return;
-        (bool success,) = handler.ghost_funAddress_fail().staticcall{gas: handler.ghost_gas_fail()}(
-            abi.encodeWithSelector(handler.ghost_funSelector_fail(), handler.ghost_input_fail())
-        );
-        assertFalse(success);
+        if (handler.ghost_success()) {
+            assertTrue(success);
+        } else {
+            assertFalse(success);
+        }
     }
 
     function invariant_callSummary() public view {

@@ -12,15 +12,11 @@ contract Handler is CommonBase, StdCheats, StdUtils {
 
     mapping(bytes32 => uint256) public calls;
 
-    address public ghost_funAddress_success;
-    bytes4 public ghost_funSelector_success;
-    bytes public ghost_input_success;
-    uint256 public ghost_gas_success;
-
-    address public ghost_funAddress_fail;
-    bytes4 public ghost_funSelector_fail;
-    bytes public ghost_input_fail;
-    uint256 public ghost_gas_fail;
+    bool public ghost_success;
+    address public ghost_funAddress;
+    bytes4 public ghost_funSelector;
+    bytes public ghost_input;
+    uint256 public ghost_gas;
 
     modifier countCall(bytes32 key) {
         calls[key]++;
@@ -44,9 +40,9 @@ contract Handler is CommonBase, StdCheats, StdUtils {
         countCall("preHookStatic")
     {
         try hooks.preHookStatic(funAddress, funSelector, input, gas) {
-            _setGhostSuccess(funAddress, funSelector, input, gas);
+            _setGhost(true, funAddress, funSelector, input, gas);
         } catch {
-            _setGhostFail(funAddress, funSelector, input, gas);
+            _setGhost(false, funAddress, funSelector, input, gas);
         }
     }
 
@@ -55,23 +51,19 @@ contract Handler is CommonBase, StdCheats, StdUtils {
         countCall("postHookStatic")
     {
         try hooks.postHookStatic(funAddress, funSelector, input, gas) {
-            _setGhostSuccess(funAddress, funSelector, input, gas);
+            _setGhost(true, funAddress, funSelector, input, gas);
         } catch {
-            _setGhostFail(funAddress, funSelector, input, gas);
+            _setGhost(false, funAddress, funSelector, input, gas);
         }
     }
 
-    function _setGhostSuccess(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) internal {
-        ghost_funAddress_success = funAddress;
-        ghost_funSelector_success = funSelector;
-        ghost_input_success = input;
-        ghost_gas_success = gas;
-    }
-
-    function _setGhostFail(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) internal {
-        ghost_funAddress_fail = funAddress;
-        ghost_funSelector_fail = funSelector;
-        ghost_input_fail = input;
-        ghost_gas_fail = gas;
+    function _setGhost(bool success, address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        internal
+    {
+        ghost_success = success;
+        ghost_funAddress = funAddress;
+        ghost_funSelector = funSelector;
+        ghost_input = input;
+        ghost_gas = gas;
     }
 }

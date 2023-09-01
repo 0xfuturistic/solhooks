@@ -24,7 +24,7 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
     function handlerPreHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
         public
         countCall("preHook")
-        preHook(funAddress, funSelector, input, gas)
+        PreHook(funAddress, funSelector, input, gas)
     {}
 
     function callSummary() external view {

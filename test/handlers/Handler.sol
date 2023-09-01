@@ -36,7 +36,7 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
 
     function postHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
         public
-        countCall("postHook")
+        countCall("postHookStatic")
         PostHookStatic(funAddress, funSelector, input, gas)
     {
         _setGhostSuccess(funAddress, funSelector, input, gas);

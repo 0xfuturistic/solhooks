@@ -5,7 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {Hooks} from "../src/Hooks.sol";
 import {Handler} from "./handlers/Handler.sol";
 
-contract HooksTest is Test {
+contract HooksInvariants is Test {
     Hooks public hooks;
     Handler public handler;
 

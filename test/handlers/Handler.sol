@@ -12,6 +12,11 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
 
     mapping(bytes32 => uint256) public calls;
 
+    address public ghost_funAddress_success;
+    bytes4 public ghost_funSelector_success;
+    bytes public ghost_input_success;
+    uint256 public ghost_gas_success;
+
     modifier countCall(bytes32 key) {
         calls[key]++;
         _;
@@ -21,16 +26,34 @@ contract Handler is Hooks, CommonBase, StdCheats, StdUtils {
         hooks = hooks_;
     }
 
-    function handlerPreHook(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+    function preHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
         public
-        countCall("preHook")
-        PreHook(funAddress, funSelector, input, gas)
-    {}
+        countCall("preHookStatic")
+        PreHookStatic(funAddress, funSelector, input, gas)
+    {
+        _setGhostSuccess(funAddress, funSelector, input, gas);
+    }
+
+    function postHookStatic(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas)
+        public
+        countCall("postHook")
+        PostHookStatic(funAddress, funSelector, input, gas)
+    {
+        _setGhostSuccess(funAddress, funSelector, input, gas);
+    }
 
     function callSummary() external view {
         console.log("Call summary:");
         console.log("-------------------");
-        console.log("preHook", calls["preHook"]);
+        console.log("preHookStatic", calls["preHookStatic"]);
+        console.log("postHookStatic", calls["postHookStatic"]);
         console.log("-------------------");
+    }
+
+    function _setGhostSuccess(address funAddress, bytes4 funSelector, bytes memory input, uint256 gas) internal {
+        ghost_funAddress_success = funAddress;
+        ghost_funSelector_success = funSelector;
+        ghost_input_success = input;
+        ghost_gas_success = gas;
     }
 }
